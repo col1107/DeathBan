@@ -24,9 +24,8 @@ public class DBPlayerListener extends PlayerListener{
 			}
 			
 			String time = displayBannedUntilDate(player);
-			String lengthmessage = " Ban will expire: " + time;
 			String banmessage = plugin.config.getString("you-are-banned");
-			String message = banmessage + lengthmessage;
+			String message = banmessage.replace("$t", time);
 			
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, message);
 		}

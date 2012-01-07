@@ -1,5 +1,7 @@
 package me.kanlaki101.DeathBan;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
@@ -15,6 +17,7 @@ public class DBEntityListener extends EntityListener {
     public void onEntityDeath(EntityDeathEvent event) {
         if (event instanceof PlayerDeathEvent) {
         	plugin.loadBanlist();
+        	plugin.loadConfig();
             
             Player p = (Player) event.getEntity();
             String player = p.getName();
@@ -25,12 +28,20 @@ public class DBEntityListener extends EntityListener {
 	            plugin.saveBanlist();
 	            
 				String banmessage = plugin.config.getString("death-message");
-				String lengthmessage = " Ban will expire: " + plugin.bannedUntil();
-				String message = banmessage + lengthmessage;
+				String lengthmessage = plugin.bannedUntil();
+				String message = banmessage.replace("$t", lengthmessage);
+				
+				if (plugin.config.getBoolean("tp-to-spawn-on-death") == true) {
+					World world = p.getWorld();
+					Location spawn = world.getSpawnLocation();
+					p.teleport(spawn);
+				}
+				p.getInventory().clear();
 	            p.kickPlayer(message);
 	        	
 	            PlayerDeathEvent e = (PlayerDeathEvent) event;
-	            String deathmessage = player + " " + plugin.config.getString("death-message-broadcast");
+	            String dmessage = plugin.config.getString("death-message-broadcast");
+	            String deathmessage = dmessage.replace("$p", player);
 	            
 	            e.setDeathMessage(deathmessage);
 	            plugin.log.info(deathmessage);

@@ -2,19 +2,20 @@
 # 60 will result in a ONE HOUR ban
 deathban-time: 60
 # ===========================================================================
+# If set to true, the player will be teleported to spawn, then killed/banned.
+tp-to-spawn-on-death: true
+# ===========================================================================
 # Message shown to players when they die.
 # After this death message, it will show them the day thay will be unbanned.
-death-message: You died, and have been banned.
+# $t is a variable. It's replaced with the date the player is unbanned.
+death-message: You died, and have been banned. Ban will expire on $t.
 # ===========================================================================
 # Message shown to all players in the server when a player dies.
 # The name of the player is always added in from of this message.
-# Examples:
-#       death-message-broadcast: has been taken from this world.
-#           Results in: Kanlaki101 has been taken from this world.
-#       death-message-broadcast: has died. He's gone to a better place.
-#           Results in: Kanlaki101 has died. He's gone to a better place.
-death-message-broadcast: has been taken from this world.
+# $p is a variable. It's replaced with the name of the player.
+death-message-broadcast: $p has been taken from this world.
 # ===========================================================================
 # Message shown when a banned player trys to join the server
 # Players will also see when they are unbanned after this.
-you-are-banned: You have been banned for dying.
+# $t is a variable. It's replaced with the date the player is unbanned.
+you-are-banned: You have been banned for dying. Ban will expire on $t.
