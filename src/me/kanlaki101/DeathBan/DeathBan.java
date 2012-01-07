@@ -13,6 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import me.kanlaki101.DeathBan.commands.DBReload;
+import me.kanlaki101.DeathBan.commands.DBUnban;
+import me.kanlaki101.DeathBan.listeners.DBEntityListener;
+import me.kanlaki101.DeathBan.listeners.DBPlayerListener;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.command.CommandSender;
@@ -35,7 +39,7 @@ public class DeathBan extends JavaPlugin {
 	public File banlistFile;
     public FileConfiguration config;
     public FileConfiguration banlist;
-    ArrayList<String> bannedPlayers = new ArrayList<String>();
+    public ArrayList<String> bannedPlayers = new ArrayList<String>();
     Map<String,Long> Bans = new HashMap<String,Long>();
 	
 	public void onEnable() {
@@ -48,14 +52,16 @@ public class DeathBan extends JavaPlugin {
 	    loadConfig();
 	    loadBanlist(); //Load ban list
 	    
-	    setupPermissions();
+	    setupPermissions(); //Find permissions systems via Vault
 	    
-	    addBannedPlayersToArray();
+	    addBannedPlayersToArray(); //Add everyone on the banlist.yml to the bannedPlayers array
 	    
+	    //Register events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal, this);
 		
+		//Register commands
 		getCommand("dbreload").setExecutor(new DBReload(this));
 		getCommand("dbunban").setExecutor(new DBUnban(this));
 		
@@ -148,23 +154,23 @@ public class DeathBan extends JavaPlugin {
 	}	
 	
 	private void addBannedPlayersToArray() {
-		ConfigurationSection groupSection = banlist.getConfigurationSection("banned-players"); //saves the section we are in for re-use
+		ConfigurationSection groupSection = banlist.getConfigurationSection("banned-players"); //Saves the section we are in for re-use
 		 
 		if (groupSection != null) {
-			for (String players : groupSection.getKeys(false)) { //iterate over all keys
+			for (String players : groupSection.getKeys(false)) { //Iterate over all keys
 			    bannedPlayers.add(players);
 			}
 		}
 	}
 	
-    public long getTimeInMillis() { //Used to see if a ban is expired
+    public long getTimeInMillis() { //Gets the current time in milliseconds. Used to compare times
 		Calendar calendar = Calendar.getInstance();
 		long time = calendar.getTimeInMillis();
 
     	return time;
     }
     
-    public String bannedUntil() {
+    public String bannedUntil() { //Takes the current time, adds the length of the ban, and formats it
     	DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
     	int bantime = config.getInt("deathban-time");
     	
@@ -176,7 +182,7 @@ public class DeathBan extends JavaPlugin {
     	return time;
     }
     
-    public long banTimeInMillis() {
+    public long banTimeInMillis() { //Takes the current time, adds the length of the ban, all in milliseconds
     	int bantime = config.getInt("deathban-time");
     	
     	Calendar calendar = Calendar.getInstance();

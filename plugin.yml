@@ -1,6 +1,6 @@
 name: DeathBan
 main: me.kanlaki101.DeathBan.DeathBan
-version: 0.2
+version: 0.3
 author: Kanlaki101
 depend: [Vault]
 description: >
