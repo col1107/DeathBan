@@ -8,7 +8,7 @@ tp-to-spawn-on-death: true
 # When set to true, players will not be banned if the cause of death is
 # a mob, a high fall, etc. They will only be banned for being killed by
 # another player.
-ban-for-pvp-only: false
+ban-for-pvp-ban-only: false
 # ===========================================================================
 # Message shown to players when they die.
 # After this death message, it will show them the day thay will be unbanned.
