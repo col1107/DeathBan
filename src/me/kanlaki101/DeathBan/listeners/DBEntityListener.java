@@ -29,7 +29,7 @@ public class DBEntityListener extends EntityListener {
 			
 			if (plugin.isAuthorized(victim, "deathban.exception")) return; //If the player is excluded from being banned
 
-			if (plugin.config.getBoolean("ban-for-pvp-ban-only") ==  true) { //If the server only wants to ban for PVP
+			if (plugin.config.getBoolean("ban-for-pvp-only") ==  true) { //If the server only wants to ban for PVP
 				if (!(killer instanceof Player)) return;
 			}
 			
