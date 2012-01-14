@@ -3,6 +3,12 @@ DeathBan:
 		Ever wanted to play Minecraft in hardcore mode? If so, you've come to the right place.
 		This plugin is designed to ban users when they die. The time is configurable!
 		The date they will be unbanned is displayed when they die, and when they try to join.
+		
+Requirements:
+--
+		Vault is required for DeathBan to work.
+		Vault is used for easy implementation of DeathBan into almost any permissions system.
+		If you do not have Vault, you can find it here: http://dev.bukkit.org/server-mods/vault/
 
 Features:
 --
