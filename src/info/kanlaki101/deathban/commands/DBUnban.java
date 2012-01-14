@@ -1,6 +1,7 @@
-package me.kanlaki101.DeathBan.commands;
+package info.kanlaki101.deathban.commands;
 
-import me.kanlaki101.DeathBan.DeathBan;
+import info.kanlaki101.deathban.DeathBan;
+import info.kanlaki101.deathban.utilities.DBConfigHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,8 +18,8 @@ public class DBUnban implements CommandExecutor {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (commandLabel.equalsIgnoreCase("dbunban")) {
-			plugin.loadConfig();
+		if (cmd.getName().equalsIgnoreCase("dbunban")) {
+			DBConfigHandler.loadConfig();
 			
 			//If player does not have permission, or is no console
 			if (!plugin.isAuthorized(sender, "deathban.unban") || (!(sender instanceof ConsoleCommandSender))) {
@@ -32,7 +33,7 @@ public class DBUnban implements CommandExecutor {
 			}
 			if (args.length > 1) return true; //If there are too many arguments.
 			if (args.length == 1) {
-				if (!plugin.banlist.contains("banned-players." + args[0])) { //If player is not banned
+				if (!DBConfigHandler.banlist.contains("banned-players." + args[0].toLowerCase())) { //If player is not banned
 					sender.sendMessage(ChatColor.YELLOW + "Player is not found.");
 					return true;
 				}
@@ -44,9 +45,9 @@ public class DBUnban implements CommandExecutor {
 					sender.sendMessage(ChatColor.YELLOW + "Player: " + ChatColor.WHITE + args[0] + ChatColor.YELLOW + " has been unbanned.");
 				}
 				
-				plugin.bannedPlayers.remove(args[0]); //remove from the banlist
-				plugin.banlist.set("banned-players." + args[0], null);
-				plugin.saveBanlist();
+				plugin.bannedPlayers.remove(args[0].toLowerCase()); //remove from the banlist
+				DBConfigHandler.banlist.set("banned-players." + args[0].toLowerCase(), null);
+				DBConfigHandler.saveBanlist();
 			}	
 		}
 		return true;

@@ -1,6 +1,6 @@
 name: DeathBan
-main: me.kanlaki101.DeathBan.DeathBan
-version: 0.3
+main: info.kanlaki101.deathban.DeathBan
+version: 0.4
 author: Kanlaki101
 depend: [Vault]
 description: >
@@ -11,7 +11,11 @@ commands:
     usage: /<command>
   dbunban:
     description: Manually unban a player
-    usage: /<command>
+    usage: /<command> <player>
+  dblives:
+    aliases: [lives, l]
+    description: View/Edit a players lives
+    usage: /<command> <player:add:set> [player] [amount]
     
 permissions:
     deathban.*:
@@ -20,6 +24,7 @@ permissions:
             deathban.exception: true
             deathban.reload: true
             deathban.unban: true
+            deathban.editlives: true
     deathban.exception:
         description: Users will not be banned on death
         default: op
@@ -28,4 +33,7 @@ permissions:
         default: op
     deathban.unban:
         description: Ability to unban a player
+        default: op
+    deathban.editlives:
+        desctiption: Ability to edit/add to a players amount of lives
         default: op

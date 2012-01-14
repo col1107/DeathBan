@@ -6,10 +6,10 @@
 #   DO NOT MANUALLY EDIT    #
 #  THIS FILE. CLOSE IT NOW! #
 #                           #
-#   IF YOU NEED TO UNBAN    #
-#  A PLAYER, USE THE UNBAN  #
-#      COMMAND. TYPE:       #
-#   /DBUNBAN <PLAYERNAME>   #
+#   IF YOU NEED TO EDIT A   #
+#  PLAYERS NUMBER OF LIVES  #
+#      TYPE: /DBLIVES       #
+#   <SET:ADD> <PLAYER> <#>  #
 #                           #
 # ========================= #
-banned-players:
+player-lives: 

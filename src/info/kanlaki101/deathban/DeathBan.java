@@ -1,28 +1,22 @@
-package me.kanlaki101.DeathBan;
+package info.kanlaki101.deathban;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import info.kanlaki101.deathban.commands.DBLives;
+import info.kanlaki101.deathban.commands.DBReload;
+import info.kanlaki101.deathban.commands.DBUnban;
+import info.kanlaki101.deathban.listeners.DBEntityListener;
+import info.kanlaki101.deathban.listeners.DBPlayerListener;
+import info.kanlaki101.deathban.utilities.DBConfigHandler;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import me.kanlaki101.DeathBan.commands.DBReload;
-import me.kanlaki101.DeathBan.commands.DBUnban;
-import me.kanlaki101.DeathBan.listeners.DBEntityListener;
-import me.kanlaki101.DeathBan.listeners.DBPlayerListener;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
@@ -33,25 +27,17 @@ public class DeathBan extends JavaPlugin {
 
 	private final DBPlayerListener playerListener = new DBPlayerListener(this);
 	private final DBEntityListener entityListener = new DBEntityListener(this);
+	public final DBConfigHandler configHandler = new DBConfigHandler(this);
 	public final Logger log = Logger.getLogger("Minecraft");
     public Permission permission = null;
-	public File configFile;
-	public File banlistFile;
-    public FileConfiguration config;
-    public FileConfiguration banlist;
+
     public ArrayList<String> bannedPlayers = new ArrayList<String>();
-    Map<String,Long> Bans = new HashMap<String,Long>();
 	
 	public void onEnable() {
-		configFile = new File(getDataFolder(), "config.yml");
-		banlistFile = new File(getDataFolder(), "banlist.yml");
-		setupConfig(); 
-		setupBanlist(); //Create ban list
-		config = new YamlConfiguration();
-		banlist = new YamlConfiguration();
-	    loadConfig();
-	    loadBanlist(); //Load ban list
-	    
+		configHandler.setupConfig(); 
+		configHandler.setupBanlist();
+		configHandler.setupLives();
+
 	    setupPermissions(); //Find permissions systems via Vault
 	    
 	    addBannedPlayersToArray(); //Add everyone on the banlist.yml to the bannedPlayers array
@@ -60,10 +46,12 @@ public class DeathBan extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
 		
 		//Register commands
 		getCommand("dbreload").setExecutor(new DBReload(this));
 		getCommand("dbunban").setExecutor(new DBUnban(this));
+		getCommand("dblives").setExecutor(new DBLives(this));
 		
 		log.info("[DeathBan] Enabling...");
 	}
@@ -90,71 +78,8 @@ public class DeathBan extends JavaPlugin {
 		return false;
 	}
 	
-	public void setupConfig() {
-	    
-	    if(!configFile.exists()) { //If the file doesn't exist, create it
-	    	configFile.getParentFile().mkdirs();
-	        copy(getResource("config.yml"), configFile);
-	    }
-	}
-	
-	public void setupBanlist() {
-	    
-	    if(!banlistFile.exists()) { //If the file doesn't exist, create it
-	    	banlistFile.getParentFile().mkdirs();
-	        copy(getResource("banlist.yml"), banlistFile);
-	    }
-	}
-	
-	private void copy(InputStream in, File file) { //Copy information from existing files
-	    try {
-	        OutputStream out = new FileOutputStream(file);
-	        byte[] buf = new byte[1024];
-	        int len;
-	        while((len=in.read(buf))>0){
-	            out.write(buf,0,len);
-	        }
-	        out.close();
-	        in.close();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	public void saveConfig() { //Save ban list
-	    try {
-	    	config.save(configFile);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	public void loadConfig() { //Load ban list
-	    try {
-	    	config.load(configFile);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	public void saveBanlist() { //Save ban list
-	    try {
-	    	banlist.save(banlistFile);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	public void loadBanlist() { //Load ban list
-	    try {
-	    	banlist.load(banlistFile);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}	
-	
 	private void addBannedPlayersToArray() {
-		ConfigurationSection groupSection = banlist.getConfigurationSection("banned-players"); //Saves the section we are in for re-use
+		ConfigurationSection groupSection = DBConfigHandler.banlist.getConfigurationSection("banned-players"); //Saves the section we are in for re-use
 		 
 		if (groupSection != null) {
 			for (String players : groupSection.getKeys(false)) { //Iterate over all keys
@@ -172,7 +97,7 @@ public class DeathBan extends JavaPlugin {
     
     public String bannedUntil() { //Takes the current time, adds the length of the ban, and formats it
     	DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-    	int bantime = config.getInt("deathban-time");
+    	int bantime = DBConfigHandler.getDeathBanTime();
     	
     	Calendar calendar = Calendar.getInstance();
     	calendar.add(Calendar.MINUTE, bantime);
@@ -183,7 +108,7 @@ public class DeathBan extends JavaPlugin {
     }
     
     public long banTimeInMillis() { //Takes the current time, adds the length of the ban, all in milliseconds
-    	int bantime = config.getInt("deathban-time");
+    	int bantime = DBConfigHandler.getDeathBanTime();
     	
     	Calendar calendar = Calendar.getInstance();
     	calendar.add(Calendar.MINUTE, bantime);

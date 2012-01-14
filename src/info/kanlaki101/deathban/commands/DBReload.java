@@ -1,6 +1,7 @@
-package me.kanlaki101.DeathBan.commands;
+package info.kanlaki101.deathban.commands;
 
-import me.kanlaki101.DeathBan.DeathBan;
+import info.kanlaki101.deathban.DeathBan;
+import info.kanlaki101.deathban.utilities.DBConfigHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,7 +17,7 @@ public class DBReload implements CommandExecutor {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (commandLabel.equalsIgnoreCase("dbreload")) {
+		if (cmd.getName().equalsIgnoreCase("dbreload")) {
 			if (args.length > 0) return true;
 			if (sender instanceof ConsoleCommandSender) { //If the command is sent from console
 				plugin.log.info("[DeathBan] Config reloaded.");
@@ -28,7 +29,7 @@ public class DBReload implements CommandExecutor {
 				}
 				sender.sendMessage(ChatColor.YELLOW + "[DeathBan] Config reloaded.");
 			}
-			plugin.loadConfig(); //Reload the configuration file
+			DBConfigHandler.loadConfig(); //Reload the configuration file
 		}
 		return true;
 	}
