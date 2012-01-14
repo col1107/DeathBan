@@ -40,16 +40,20 @@ Commands:
 Permissions:
 --
 		* deathban.exception:
-			Prevent the player from being banned off of the server upon death
+			Description: Prevent the player from being banned off of the server upon death
+			Default: op
 
 		* deathban.reload:
-			Gives the user the ability to reload the configuration file
+			Description: Gives the user the ability to reload the configuration file
+			Default: op
 			
 		* deathban.unban:
-			Gives the user the ability to unban players
+			Description: Gives the user the ability to unban players
+			Default: op
 		
 		* deathban.editlives:
-			Gives the user the ability to edit a players amount of lives
+			Description: Gives the user the ability to edit a players amount of lives
+			Default: op
  
 About:
 --
