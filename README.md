@@ -1,4 +1,4 @@
-CheckWorld:
+DeathBan:
 =
 		Ever wanted to play Minecraft in hardcore mode? If so, you've come to the right place.
 		This plugin is designed to ban users when they die. The time is configurable!
